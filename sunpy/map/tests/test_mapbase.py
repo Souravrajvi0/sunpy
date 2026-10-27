@@ -28,6 +28,7 @@ from astropy.wcs import InconsistentAxisTypesError
 from astropy.wcs.wcsapi.wrappers import SlicedLowLevelWCS
 
 from ndcube.wcs.wrappers import ResampledLowLevelWCS
+from ndcube.utils.exceptions import NDCubeUserWarning
 
 import sunpy
 import sunpy.coordinates
