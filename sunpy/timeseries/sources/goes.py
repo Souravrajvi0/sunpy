@@ -81,13 +81,14 @@ class XRSTimeSeries(GenericTimeSeries):
             The plot axes.
         """
         if columns is None:
-            columns = ["xrsa", "xrsb"]
+            columns = [c for c in ("xrsa", "xrsb") if c in self.columns] or None
         axes, columns = self._setup_axes_columns(axes, columns)
         plot_settings = {"xrsa": ["blue", r"0.5$-$4.0 $\mathrm{\AA}$"], "xrsb": ["red", r"1.0$-$8.0 $\mathrm{\AA}$"]}
         data = self.to_dataframe()
         for channel in columns:
+            color, label = plot_settings.get(channel, ["C0", channel])
             axes.plot(
-                data.index, data[channel], "-", label=plot_settings[channel][1], color=plot_settings[channel][0], lw=2, **kwargs
+                data.index, data[channel], "-", label=label, color=color, lw=2, **kwargs
             )
         axes.set_yscale("log")
         axes.set_ylim(1e-9, 1e-2)

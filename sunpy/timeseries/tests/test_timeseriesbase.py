@@ -516,6 +516,39 @@ def test_ts_sort_index(generic_ts):
     assert generic_ts.sort_index().to_dataframe().equals(generic_ts.to_dataframe().sort_index())
 
 
+class _SubclassTimeSeries(GenericTimeSeries):
+    _source = 'test'
+
+
+def test_sort_index_preserves_subclass(generic_ts):
+    ts = _SubclassTimeSeries(generic_ts.to_dataframe().copy(),
+                             copy.deepcopy(generic_ts.meta),
+                             copy.copy(generic_ts.units))
+    result = ts.sort_index()
+    assert type(result) is _SubclassTimeSeries
+
+
+def test_extract_preserves_subclass(generic_ts):
+    ts = _SubclassTimeSeries(generic_ts.to_dataframe().copy(),
+                             copy.deepcopy(generic_ts.meta),
+                             copy.copy(generic_ts.units))
+    result = ts.extract('intensity')
+    assert type(result) is _SubclassTimeSeries
+    assert list(result.columns) == ['intensity']
+
+
+def test_goes_sort_index_preserves_class(goes_test_ts):
+    result = goes_test_ts.sort_index()
+    assert type(result) is type(goes_test_ts)
+    assert result.observatory == goes_test_ts.observatory
+
+
+def test_goes_extract_preserves_class(goes_test_ts):
+    result = goes_test_ts.extract('xrsb')
+    assert type(result) is type(goes_test_ts)
+    assert list(result.columns) == ['xrsb']
+
+
 def test_repr_html_(generic_ts):
     html_string = generic_ts._repr_html_()
     assert isinstance(html_string, str)

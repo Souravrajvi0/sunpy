@@ -497,9 +497,9 @@ class GenericTimeSeries:
         `~sunpy.timeseries.TimeSeries`
             A new `~sunpy.timeseries.TimeSeries` in ascending chronological order.
         """
-        return GenericTimeSeries(self._data.sort_index(**kwargs),
-                                 TimeSeriesMetaData(copy.deepcopy(self.meta.metadata)),
-                                 copy.copy(self.units))
+        return self.__class__(self._data.sort_index(**kwargs),
+                              TimeSeriesMetaData(copy.deepcopy(self.meta.metadata)),
+                              copy.copy(self.units))
 
     def truncate(self, a, b=None, int=None):
         """
@@ -576,10 +576,10 @@ class GenericTimeSeries:
         data = self._data[[column_name]].dropna()
         units = {column_name: self.units[column_name]}
 
-        # Build generic TimeSeries object and sanatise metadata and units.
-        object = GenericTimeSeries(data.sort_index(),
-                                   TimeSeriesMetaData(copy.deepcopy(self.meta.metadata)),
-                                   units)
+        # Build a TimeSeries of the same class and sanitise metadata and units.
+        object = self.__class__(data.sort_index(),
+                                TimeSeriesMetaData(copy.deepcopy(self.meta.metadata)),
+                                units)
         object._sanitize_metadata()
         return object
 
