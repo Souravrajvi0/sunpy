@@ -171,6 +171,18 @@ def test_input_error(timerange_a):
         sunpy.time.TimeRange(tbegin_str)
 
 
+def test_window_nonpositive_inputs(timerange_a):
+    timerange = sunpy.time.TimeRange(tbegin_str, tfin_str)
+    with pytest.raises(ValueError, match="cadence must be positive"):
+        timerange.window(0 * u.s, 10 * u.s)
+    with pytest.raises(ValueError, match="cadence must be positive"):
+        timerange.window(-1 * u.s, 10 * u.s)
+    with pytest.raises(ValueError, match="window must be positive"):
+        timerange.window(10 * u.s, 0 * u.s)
+    with pytest.raises(ValueError, match="window must be positive"):
+        timerange.window(10 * u.s, -1 * u.s)
+
+
 def test_window(timerange_a):
     timerange = sunpy.time.TimeRange(tbegin_str, tfin_str)
     window = timerange.window(u.Quantity(12 * 60 * 60, 's'), u.Quantity(10, 's'))

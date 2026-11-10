@@ -327,9 +327,9 @@ class TimeRange:
         Parameters
         ----------
         cadence : `~astropy.units.quantity.Quantity`, `astropy.time.TimeDelta`
-            Cadence.
+            Cadence. Must be strictly positive.
         window : `~astropy.units.quantity.Quantity`, `astropy.time.TimeDelta`
-            The length of window.
+            The length of window. Must be strictly positive.
 
         Returns
         -------
@@ -372,6 +372,10 @@ class TimeRange:
             window = TimeDelta(window)
         if not isinstance(cadence, TimeDelta):
             cadence = TimeDelta(cadence)
+        if cadence <= TimeDelta(0 * u.s):
+            raise ValueError("cadence must be positive")
+        if window <= TimeDelta(0 * u.s):
+            raise ValueError("window must be positive")
 
         n = 1
         times = [TimeRange(self.start, self.start + window)]
